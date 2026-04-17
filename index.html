@@ -329,34 +329,14 @@
 <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/controls/OrbitControls.js"></script>
 
 <script>
-/* ╔══════════════════════════════════════════════════════════════════╗
-   ║            ★  CONFIGURATION — EDIT THIS SECTION  ★            ║
-   ╠══════════════════════════════════════════════════════════════════╣
-   ║  STEP 1 — GOOGLE SIGN-IN CLIENT ID                             ║
-   ║  1. Go to https://console.cloud.google.com/                    ║
-   ║  2. Create a project → APIs & Services → Credentials           ║
-   ║  3. Create OAuth 2.0 Client ID → Web application               ║
-   ║  4. Add your site to "Authorised JavaScript origins"           ║
-   ║  5. Paste your Client ID below                                 ║
-   ╚══════════════════════════════════════════════════════════════════╝ */
 var GOOGLE_CLIENT_ID = '207641773720-ngpoisdhc4sqbrl026qii7ln2cg7p9i8.apps.googleusercontent.com';
-
-/* ╔══════════════════════════════════════════════════════════════════╗
-   ║  STEP 2 — FIREBASE (for the global player leaderboard)         ║
-   ║  1. Go to https://console.firebase.google.com/                 ║
-   ║  2. Create a project → Add a web app                           ║
-   ║  3. Build → Realtime Database → Create database (test mode)    ║
-   ║  4. Project Settings → Your apps → paste the firebaseConfig    ║
-   ║     values below                                               ║
-   ╚══════════════════════════════════════════════════════════════════╝ */
-    
-   var FIREBASE_CONFIG = {
-   apiKey: "AIzaSyAZqRhZb4__bfrHfwrvR-PdTaf7cskXJic",
+ const firebaseConfig = {
+  apiKey: "AIzaSyAZqRhZb4__bfrHfwrvR-PdTaf7cskXJic",
   authDomain: "new-snake-game.firebaseapp.com",
   projectId: "new-snake-game",
   storageBucket: "new-snake-game.firebasestorage.app",
   messagingSenderId: "850698019507",
-  appId: "1:850698019507:web:a3c888123db9f9188a46c6"
+  appId: "1:850698019507:web:000104f757b5d9b08a46c6"
 };
 /* ══════════════════════════════════════════════════════════════════
    ▲▲▲  END OF CONFIGURATION  ▲▲▲
