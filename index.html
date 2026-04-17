@@ -320,27 +320,47 @@
 <!-- Google Identity Services -->
 <script src="https://accounts.google.com/gsi/client" async></script>
 
-<!-- Firebase (Realtime Database) -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<!-- Firebase 8 (Realtime Database — stable global build) -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
 <!-- Three.js (global, no ES modules) -->
 <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/controls/OrbitControls.js"></script>
 
 <script>
-
+/* ╔══════════════════════════════════════════════════════════════════╗
+   ║            ★  CONFIGURATION — EDIT THIS SECTION  ★            ║
+   ╠══════════════════════════════════════════════════════════════════╣
+   ║  STEP 1 — GOOGLE SIGN-IN CLIENT ID                             ║
+   ║  1. Go to https://console.cloud.google.com/                    ║
+   ║  2. Create a project → APIs & Services → Credentials           ║
+   ║  3. Create OAuth 2.0 Client ID → Web application               ║
+   ║  4. Add your site to "Authorised JavaScript origins"           ║
+   ║  5. Paste your Client ID below                                 ║
+   ╚══════════════════════════════════════════════════════════════════╝ */
 var GOOGLE_CLIENT_ID = '207641773720-ngpoisdhc4sqbrl026qii7ln2cg7p9i8.apps.googleusercontent.com';
-    import { initializeApp } from "firebase/app";
-   const firebaseConfig = {
-      apiKey: "AIzaSyAZqRhZb4__bfrHfwrvR-PdTaf7cskXJic",
-      authDomain: "new-snake-game.firebaseapp.com",
-      projectId: "new-snake-game",
-      storageBucket: "new-snake-game.firebasestorage.app",
-      messagingSenderId: "850698019507",
-      appId: "1:850698019507:web:995e8cc8bee9d5108a46c6"
-    };
-    const app = initializeApp(firebaseConfig);
+
+/* ╔══════════════════════════════════════════════════════════════════╗
+   ║  STEP 2 — FIREBASE (for the global player leaderboard)         ║
+   ║  1. Go to https://console.firebase.google.com/                 ║
+   ║  2. Create a project → Add a web app                           ║
+   ║  3. Build → Realtime Database → Create database (test mode)    ║
+   ║  4. Project Settings → Your apps → paste the firebaseConfig    ║
+   ║     values below                                               ║
+   ╚══════════════════════════════════════════════════════════════════╝ */
+var FIREBASE_CONFIG = {
+  apiKey:            'YOUR_FIREBASE_API_KEY',
+  authDomain:        'YOUR_PROJECT_ID.firebaseapp.com',
+  databaseURL:       'https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com',
+  projectId:         'YOUR_PROJECT_ID',
+  storageBucket:     'YOUR_PROJECT_ID.appspot.com',
+  messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
+  appId:             'YOUR_APP_ID',
+};
+/* ══════════════════════════════════════════════════════════════════
+   ▲▲▲  END OF CONFIGURATION  ▲▲▲
+══════════════════════════════════════════════════════════════════ */
 
 var currentUser = null; // { name, email, picture, uid }
 var db = null;          // Firebase Realtime Database reference
@@ -348,9 +368,10 @@ var db = null;          // Firebase Realtime Database reference
 /* ── Firebase init ── */
 function initFirebase() {
   if (FIREBASE_CONFIG.apiKey === 'YOUR_FIREBASE_API_KEY') return;
+  if (typeof firebase === 'undefined') return;
   try {
-    var app = firebase.initializeApp(FIREBASE_CONFIG);
-    db = firebase.database(app);
+    firebase.initializeApp(FIREBASE_CONFIG);
+    db = firebase.database();
   } catch(e) { db = null; }
 }
 
