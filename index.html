@@ -433,7 +433,7 @@ window.addEventListener('load', function() { initFirebase(); });
 /* ═══════════════════════════════════════════════════
    SETTINGS
 ═══════════════════════════════════════════════════ */
-var SPEED_MAP = { normal:135, fast:75 };
+var SPEED_MAP = { normal:140, fast:75 };
 
 var isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
 var cfg = Object.assign(
@@ -893,7 +893,7 @@ function tick(now) {
   snake.unshift(head);
 
   if (head.x === food.x && head.z === food.z) {
-    score += 10;
+     score += cfg.speed === 'fast' ? 17 : 10 ;
     food = randFood();
     gameSpeed = Math.max(SPEED_MAP[cfg.speed] * 0.38, gameSpeed - 2);
     updScore();
@@ -1054,7 +1054,34 @@ function animate(now) {
   orbit.update();
   renderer.render(scene, camera);
 }
+document.addEventListener('visibilitychange', function() {
+  if (document.hidden) {
+    if (gameState === 'playing') {
+      gameState = 'paused';
+      document.getElementById('btn-pause').textContent = '▶';
+      stopMusic();
+    }
+  } else {
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume().catch(function(){});
+    }
+    if (gameState === 'paused' && cfg.music) startMusic();
+  }
+});
 
+window.addEventListener('pagehide', function() {
+  if (gameState === 'playing') {
+    gameState = 'paused';
+    document.getElementById('btn-pause').textContent = '▶';
+    stopMusic();
+  }
+});
+
+window.addEventListener('pageshow', function() {
+  if (audioCtx && audioCtx.state === 'suspended') {
+    audioCtx.resume().catch(function(){});
+  }
+});
 /* ═══════════════════════════════════════════════════
    BOOT
 ═══════════════════════════════════════════════════ */
