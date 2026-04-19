@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
-  <title>Lucky Snake</title>
+  <title>Lucky_Snake</title>
   <style>
     :root { --accent:#00ff88; --accent2:#00ccff; }
     * { margin:0; padding:0; box-sizing:border-box; }
@@ -38,7 +38,7 @@
     }
     .panel { display:flex; flex-direction:column; align-items:center; padding:clamp(18px,5vw,32px) clamp(22px,7vw,44px); width:100%; max-width:420px; }
 
-    .logo { font-size:clamp(32px,10vw,49px); font-weight:900; letter-spacing:-1px;
+    .logo { font-size:clamp(32px,10vw,54px); font-weight:900; letter-spacing:-1px;
       background:linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; line-height:1; margin-bottom:4px; }
     .subtitle { color:#334; font-size:clamp(9px,2.2vw,12px); letter-spacing:3px; margin-bottom:clamp(16px,4vw,24px); }
 
@@ -66,7 +66,14 @@
     .new-best { color:#ffcc00; font-size:clamp(11px,3vw,14px); margin-top:5px; font-weight:700; }
 
     /* High scores */
-    .hs-list { width:100%; border-radius:10px; overflow:hidden; border:1px solid rgba(255,255,255,0.07); margin:clamp(8px,2.5vw,14px) 0; }
+    .hs-list { width:100%; border-radius:10px; overflow-y:auto; max-height:228px; border:1px solid rgba(255,255,255,0.07); margin:clamp(8px,2.5vw,14px) 0 4px; scroll-behavior:smooth; }
+    .hs-list::-webkit-scrollbar { width:3px; } .hs-list::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.15); border-radius:3px; }
+    .hs-mypos { width:100%; margin-bottom:clamp(8px,2.5vw,14px); }
+    .hs-mypos-label { color:#00ff88; font-size:10px; font-weight:700; letter-spacing:2px; text-align:center; padding:4px 0 2px; }
+    /* Ad overlay */
+    #ad-overlay { display:none; position:fixed; inset:0; z-index:99999; background:#000; flex-direction:column; }
+    #ad-close-btn { position:absolute; top:14px; right:14px; z-index:1; background:rgba(0,0,0,0.8); color:#fff; border:1px solid rgba(255,255,255,0.25); border-radius:10px; padding:9px 18px; font-size:13px; font-weight:700; cursor:pointer; font-family:inherit; touch-action:manipulation; }
+    #ad-frame { width:100%; height:100%; border:none; }
     .hs-row { display:flex; align-items:center; padding:7px 10px; gap:8px; border-bottom:1px solid rgba(255,255,255,0.06); font-size:clamp(11px,2.8vw,13px); }
     .hs-row:last-child { border-bottom:none; }
     .hs-first { background:rgba(255,204,0,0.07); }
@@ -153,7 +160,6 @@
     }
     #btn-signout:hover { color:#99a; }
   </style>
-  
 </head>
 <body>
 
@@ -169,7 +175,7 @@
 <!-- Main Menu -->
 <div class="overlay" id="ov-menu">
   <div class="panel">
-    <div class="logo"> LUCKY SNAKE</div>
+    <div class="logo">SNAKE 3D</div>
     <div class="subtitle">CLASSIC REBORN</div>
 
     <!-- Signed-in user badge (hidden until logged in) -->
@@ -179,7 +185,7 @@
       <button id="btn-signout" onclick="googleSignOut()">Sign out</button>
     </div>
 
-    <button class="btn-primary" onclick="startGame()">Start Game</button>
+    <button class="btn-primary" onclick="showAd(startGame)">Start Game</button>
     <div class="menu-row">
       <button class="btn-secondary" onclick="openSettings('menu')">⚙ Settings</button>
       <button class="btn-secondary" onclick="showScores()">🏆 Scores</button>
@@ -221,9 +227,9 @@
     </div>
     <div class="hs-title">LEADERBOARD</div>
     <div class="hs-list" id="hs-go"></div>
-    <br>
-    <button class="btn-primary" onclick="startGame()">Play Again</button>
-    <div class="menu-row"><button class="btn-secondary" onclick="showMenu()">Menu</button></div>
+    <div class="hs-mypos" id="hs-go-mypos" style="display:none"></div>
+    <button class="btn-primary" onclick="showAd(startGame)">Play Again</button>
+    <div class="menu-row"><button class="btn-secondary" onclick="showAd(showMenu)">Menu</button></div>
   </div>
 </div>
 
@@ -231,10 +237,10 @@
 <div class="overlay" id="ov-paused" style="display:none">
   <div class="panel">
     <div style="color:#fff;font-size:clamp(22px,7vw,34px);font-weight:900;letter-spacing:3px;margin-bottom:clamp(14px,4vw,22px)">PAUSED</div>
-    <button class="btn-primary" onclick="togglePause()">Resume</button>
+    <button class="btn-primary" onclick="showAd(togglePause)">Resume</button>
     <div class="menu-row">
       <button class="btn-secondary" onclick="openSettings('pause')">⚙ Settings</button>
-      <button class="btn-secondary" onclick="showMenu()">Menu</button>
+      <button class="btn-secondary" onclick="showAd(showMenu)">Menu</button>
     </div>
   </div>
 </div>
@@ -296,11 +302,18 @@
 <div class="overlay" id="ov-scores" style="display:none">
   <div class="panel">
     <div class="logo" style="font-size:clamp(26px,8vw,42px)">🏆 SCORES</div><br>
-    <div class="hs-list" id="hs-main"></div><br>
+    <div class="hs-list" id="hs-main"></div>
+    <div class="hs-mypos" id="hs-main-mypos" style="display:none"></div>
     <div class="menu-row">
-      <button class="btn-primary" onclick="hideScores()">Back</button>
+      <button class="btn-primary" onclick="showAd(hideScores)">Back</button>
     </div>
   </div>
+</div>
+
+<!-- Ad Overlay -->
+<div id="ad-overlay">
+  <button id="ad-close-btn">✕ Close Ad</button>
+  <iframe id="ad-frame" src=""></iframe>
 </div>
 
 <!-- D-pad -->
@@ -429,12 +442,34 @@ function googleSignOut() {
   firebase.auth().signOut().catch(function(e) { console.warn('Sign-out error', e); });
 }
 
-window.addEventListener('load', function() { initFirebase(); });
+window.addEventListener('load', function() {
+  initFirebase();
+  /* Ad close button */
+  document.getElementById('ad-close-btn').addEventListener('click', function() {
+    document.getElementById('ad-overlay').style.display = 'none';
+    document.getElementById('ad-frame').src = '';
+    if (_adCallback) {
+      var cb = _adCallback;
+      _adCallback = null;
+      setTimeout(cb, 1000);
+    }
+  });
+});
+
+/* ── Ad system ── */
+var _adCallback = null;
+var AD_URL = 'https://www.profitablecpmratenetwork.com/q3wy29m2?key=36d88844d242af6822ef92855be7e156';
+
+function showAd(callback) {
+  _adCallback = callback;
+  document.getElementById('ad-frame').src = AD_URL;
+  document.getElementById('ad-overlay').style.display = 'flex';
+}
 
 /* ═══════════════════════════════════════════════════
    SETTINGS
 ═══════════════════════════════════════════════════ */
-var SPEED_MAP = { normal:140, fast:75 };
+var SPEED_MAP = { slow:280, normal:160, fast:120 };
 
 var isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
 var cfg = Object.assign(
@@ -535,36 +570,69 @@ function getLocalScores() {
 /* Render leaderboard into element #id.
    Shows a loading indicator while fetching from Firebase. */
 function renderScores(id, onDone) {
-  var el = document.getElementById(id);
+  var el      = document.getElementById(id);
+  var myposEl = document.getElementById(id + '-mypos');
   if (!el) return;
 
-  function draw(list) {
-    if (!list.length) { el.innerHTML = '<div class="hs-empty">No scores yet — be the first to play!</div>'; if (onDone) onDone(); return; }
+  function makeRow(s, i, isCurrent) {
     var medals = ['🥇','🥈','🥉'];
-    el.innerHTML = list.slice(0, 10).map(function(s, i) {
-      var isCurrent = currentUser && s.uid === currentUser.uid;
-      var avatar = s.picture
-        ? '<img src="' + s.picture + '" alt="" onerror="this.style.display=\'none\'">'
-        : '<span class="hs-avatar-ph">' + (s.name ? s.name[0].toUpperCase() : '?') + '</span>';
-      return '<div class="hs-row' + (isCurrent ? ' hs-me' : '') + (i===0?' hs-first':'') + '">' +
-        '<span class="hs-rank">'  + (medals[i] || (i+1))   + '</span>' +
-        '<span class="hs-av">'    + avatar                   + '</span>' +
-        '<span class="hs-name">'  + escHtml(s.name||'?')    + '</span>' +
-        '<span class="hs-score">' + s.score                  + '</span>' +
-        '<span class="hs-date">'  + (s.date||'')             + '</span>' +
-      '</div>';
+    var avatar = s.picture
+      ? '<img src="' + s.picture + '" alt="" onerror="this.style.display=\'none\'">'
+      : '<span class="hs-avatar-ph">' + (s.name ? s.name[0].toUpperCase() : '?') + '</span>';
+    return '<div class="hs-row' + (isCurrent ? ' hs-me' : '') + (i===0?' hs-first':'') + '">' +
+      '<span class="hs-rank">'  + (medals[i] || (i+1)) + '</span>' +
+      '<span class="hs-av">'    + avatar                + '</span>' +
+      '<span class="hs-name">'  + escHtml(s.name||'?') + '</span>' +
+      '<span class="hs-score">' + s.score               + '</span>' +
+      '<span class="hs-date">'  + (s.date||'')          + '</span>' +
+    '</div>';
+  }
+
+  function draw(list) {
+    if (!list.length) {
+      el.innerHTML = '<div class="hs-empty">No scores yet — be the first to play!</div>';
+      if (myposEl) myposEl.style.display = 'none';
+      if (onDone) onDone();
+      return;
+    }
+
+    /* Find current user's rank in the full list */
+    var userRank = -1;
+    if (currentUser) {
+      for (var i = 0; i < list.length; i++) {
+        if (list[i].uid === currentUser.uid) { userRank = i; break; }
+      }
+    }
+
+    /* Render ALL entries (scrollable) */
+    el.innerHTML = list.map(function(s, i) {
+      return makeRow(s, i, currentUser && s.uid === currentUser.uid);
     }).join('');
+
+    /* Sticky "Your Position" card — shown only when user is outside top 5 */
+    if (myposEl) {
+      if (currentUser && userRank >= 5) {
+        var u = list[userRank];
+        myposEl.style.display = 'block';
+        myposEl.innerHTML =
+          '<div class="hs-mypos-label">— YOUR POSITION —</div>' +
+          makeRow(u, userRank, true);
+      } else {
+        myposEl.style.display = 'none';
+      }
+    }
+
     if (onDone) onDone();
   }
 
   if (db) {
     el.innerHTML = '<div class="hs-empty">Loading…</div>';
-    db.ref('leaderboard').orderByChild('score').limitToLast(50).once('value', function(snap) {
+    db.ref('leaderboard').orderByChild('score').limitToLast(100).once('value', function(snap) {
       var list = [];
       snap.forEach(function(child) { list.push(Object.assign({ uid: child.key }, child.val())); });
       list.sort(function(a,b){ return b.score - a.score; });
       draw(list);
-    }, function() { draw(getLocalScores()); }); // on error fall back to local
+    }, function() { draw(getLocalScores()); });
   } else {
     draw(getLocalScores());
   }
@@ -628,7 +696,14 @@ function playTone(freq1, freq2, type, vol, dur) {
 
 function playEat() {
   if (!cfg.sfx) return;
-  playTone(440, 880, 'square', cfg.sfxVol * 0.18, 0.10);
+  /* ── EAT SOUND — easy to customise ──────────────────────────────
+     playTone(startHz, endHz, waveType, volume, durationSec)
+     waveType options : 'sine' (smooth), 'square' (buzzy),
+                        'triangle' (soft), 'sawtooth' (harsh)
+     Raise startHz / endHz for a higher-pitched sound.
+     Lower  volume (0.01–0.5) to make it quieter.
+  ─────────────────────────────────────────────────────────────── */
+  playTone(520, 1040, 'sine', cfg.sfxVol * 0.22, 0.12);
 }
 
 function playDie() {
@@ -894,7 +969,7 @@ function tick(now) {
   snake.unshift(head);
 
   if (head.x === food.x && head.z === food.z) {
-     score += cfg.speed === 'fast' ? 17 : 10 ;
+    score += cfg.speed === 'fast' ? 17 : 10;
     food = randFood();
     gameSpeed = Math.max(SPEED_MAP[cfg.speed] * 0.38, gameSpeed - 2);
     updScore();
@@ -1025,6 +1100,42 @@ cv.addEventListener('touchend', function(e) {
   steer(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? DIRS.ArrowRight : DIRS.ArrowLeft) : (dy > 0 ? DIRS.ArrowDown : DIRS.ArrowUp));
 }, { passive: true });
 
+/* ── Mobile background / foreground fix ─────────────────────────────
+   When the player switches apps or locks the screen on mobile the
+   AudioContext gets suspended and requestAnimationFrame stops.
+   We resume everything automatically when they come back.
+──────────────────────────────────────────────────────────────────── */
+document.addEventListener('visibilitychange', function() {
+  if (document.hidden) {
+    /* App went to background — pause the game if playing */
+    if (gameState === 'playing') {
+      gameState = 'paused';
+      document.getElementById('btn-pause').textContent = '▶';
+      stopMusic();
+    }
+  } else {
+    /* App came back to foreground — resume audio context */
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume().catch(function(){});
+    }
+    if (gameState === 'paused' && cfg.music) startMusic();
+  }
+});
+
+/* iOS Safari fires pageshow/pagehide instead of visibilitychange */
+window.addEventListener('pagehide', function() {
+  if (gameState === 'playing') {
+    gameState = 'paused';
+    document.getElementById('btn-pause').textContent = '▶';
+    stopMusic();
+  }
+});
+window.addEventListener('pageshow', function() {
+  if (audioCtx && audioCtx.state === 'suspended') {
+    audioCtx.resume().catch(function(){});
+  }
+});
+
 /* ═══════════════════════════════════════════════════
    RENDER LOOP
 ═══════════════════════════════════════════════════ */
@@ -1055,34 +1166,7 @@ function animate(now) {
   orbit.update();
   renderer.render(scene, camera);
 }
-document.addEventListener('visibilitychange', function() {
-  if (document.hidden) {
-    if (gameState === 'playing') {
-      gameState = 'paused';
-      document.getElementById('btn-pause').textContent = '▶';
-      stopMusic();
-    }
-  } else {
-    if (audioCtx && audioCtx.state === 'suspended') {
-      audioCtx.resume().catch(function(){});
-    }
-    if (gameState === 'paused' && cfg.music) startMusic();
-  }
-});
 
-window.addEventListener('pagehide', function() {
-  if (gameState === 'playing') {
-    gameState = 'paused';
-    document.getElementById('btn-pause').textContent = '▶';
-    stopMusic();
-  }
-});
-
-window.addEventListener('pageshow', function() {
-  if (audioCtx && audioCtx.state === 'suspended') {
-    audioCtx.resume().catch(function(){});
-  }
-});
 /* ═══════════════════════════════════════════════════
    BOOT
 ═══════════════════════════════════════════════════ */
@@ -1090,25 +1174,5 @@ buildScene();
 syncUI();
 requestAnimationFrame(animate);
 </script>
-  <div style="
-  position:fixed; bottom:0; left:0; right:0;
-  text-align:center;
-  padding:8px 16px;
-  background:rgba(5,7,16,0.75);
-  backdrop-filter:blur(8px);
-  border-top:1px solid rgba(255,255,255,0.07);
-  font-family:Inter,system-ui,sans-serif;
-  font-size:12px;
-  color:#556;
-  pointer-events:auto;
-  z-index:999;
-">
-  Made by <span style="color:#00ff88; font-weight:700;">Kareem Azzam</span>
-  &nbsp;·&nbsp;
-  <a href="mailto:kareemazzam629@gmail.com" style="color:#00ccff; text-decoration:none;">kareemazzam629@gmail.com</a>
-  &nbsp;·&nbsp;
-  <a href="https://instagram.com/YOUR_USERNAME" style="color:#00ccff; text-decoration:none;">Instagram</a>
-</div>
-  <script src="https://pl29195262.profitablecpmratenetwork.com/c6/b5/da/c6b5da5616f486da3e62cdd417d32b81.js"></script>
 </body>
 </html>
