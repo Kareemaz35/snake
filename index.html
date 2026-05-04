@@ -152,8 +152,100 @@
       cursor:pointer; font-family:inherit; padding:0; touch-action:manipulation;
     }
     #btn-signout:hover { color:#99a; }
+
+    /* ── Ad Slots ── */
+    .ad-slot {
+      width:100%; max-width:320px;
+      min-height:60px;
+      display:flex; align-items:center; justify-content:center;
+      background:rgba(255,255,255,0.04);
+      border:1.5px dashed rgba(255,255,255,0.13);
+      border-radius:10px;
+      margin:clamp(10px,3vw,16px) 0;
+      overflow:hidden;
+      position:relative;
+    }
+    .ad-slot-label {
+      color:#334; font-size:10px; font-weight:700; letter-spacing:2px;
+      position:absolute; top:4px; left:8px; pointer-events:none;
+    }
+
+    /* ── Skin Marketplace ── */
+    .skin-grid {
+      display:grid; grid-template-columns:repeat(3,1fr); gap:10px;
+      width:100%; max-width:380px;
+      margin:clamp(8px,2.5vw,14px) 0;
+      max-height:52vh; overflow-y:auto;
+      padding-right:2px;
+    }
+    .skin-card {
+      display:flex; flex-direction:column; align-items:center; gap:5px;
+      background:rgba(255,255,255,0.05); border:1.5px solid rgba(255,255,255,0.1);
+      border-radius:12px; padding:10px 6px 8px;
+      cursor:pointer; touch-action:manipulation; -webkit-tap-highlight-color:transparent;
+      transition:border-color 0.15s, background 0.15s; position:relative;
+    }
+    .skin-card.sk-active { border-color:var(--accent); background:rgba(0,255,136,0.08); }
+    .skin-card.sk-locked  { opacity:0.75; }
+    .skin-preview {
+      width:50px; height:50px; border-radius:10px;
+      position:relative; overflow:hidden; flex-shrink:0;
+      box-shadow:0 2px 10px rgba(0,0,0,0.5);
+    }
+    .skin-preview-seg {
+      position:absolute; border-radius:4px;
+    }
+    .skin-name { color:#ccd; font-size:clamp(9px,2.3vw,11px); font-weight:700; text-align:center; line-height:1.2; }
+    .skin-status { font-size:clamp(8px,2vw,10px); font-weight:700; letter-spacing:1px; }
+    .sk-st-free   { color:var(--accent); }
+    .sk-st-owned  { color:#667; }
+    .sk-st-active { color:var(--accent); }
+    .sk-st-ads    { color:#ffcc00; }
+    .skin-lock-ic {
+      position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+      font-size:20px; background:rgba(0,0,0,0.45);
+    }
+
+    /* ── Ad-Watch Overlay ── */
+    #ov-adwatch { z-index:9999; background:rgba(0,0,0,0.92); }
+    .adwatch-wrap {
+      position:relative; width:min(94vw,420px);
+      background:#000; border-radius:14px; overflow:hidden;
+      display:flex; flex-direction:column;
+      box-shadow:0 8px 40px rgba(0,0,0,0.8);
+    }
+    /* ── Paste your ad tag here ── */
+    .adwatch-ad-area {
+      width:100%; min-height:220px;
+      background:#0a0a0a;
+      display:flex; align-items:center; justify-content:center;
+      position:relative;
+    }
+    .adwatch-ad-placeholder {
+      color:#222; font-size:11px; letter-spacing:2px; font-weight:700;
+      pointer-events:none; user-select:none;
+    }
+    /* Bottom bar */
+    .adwatch-bar-row {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:10px 14px; background:#111; gap:10px;
+    }
+    .adwatch-prog  { color:#778; font-size:clamp(10px,2.5vw,12px); font-weight:700; letter-spacing:1px; }
+    .adwatch-timer-wrap { display:flex; align-items:center; gap:6px; }
+    .adwatch-timer-lbl  { color:#445; font-size:10px; }
+    .adwatch-timer { color:#ffcc00; font-size:clamp(16px,4.5vw,22px); font-weight:900; min-width:24px; text-align:center; }
+    /* X close button */
+    #adwatch-close {
+      display:none;
+      width:32px; height:32px; border-radius:50%;
+      background:rgba(255,255,255,0.12); border:1.5px solid rgba(255,255,255,0.25);
+      color:#ccc; font-size:15px; font-weight:700;
+      align-items:center; justify-content:center;
+      cursor:pointer; touch-action:manipulation; flex-shrink:0;
+      transition:background 0.15s;
+    }
+    #adwatch-close:active { background:rgba(255,255,255,0.25); }
   </style>
-  
 </head>
 <body>
 
@@ -183,6 +275,14 @@
     <div class="menu-row">
       <button class="btn-secondary" onclick="openSettings('menu')">⚙ Settings</button>
       <button class="btn-secondary" onclick="showScores()">🏆 Scores</button>
+      <button class="btn-secondary" onclick="openSkins()">🎨 Skins</button>
+    </div>
+
+    <!-- ══ AD SLOT 1 — Main Menu (below Scores button) ══
+         Paste your ad code (e.g. Google AdSense <ins> tag) inside this div. -->
+    <div class="ad-slot" id="ad-menu">
+      <span class="ad-slot-label">AD</span>
+      <!-- your ad code here -->
     </div>
 
     <!-- Google Sign-In -->
@@ -221,7 +321,14 @@
     </div>
     <div class="hs-title">LEADERBOARD</div>
     <div class="hs-list" id="hs-go"></div>
-    <br>
+
+    <!-- ══ AD SLOT 2 — Game Over (above Play Again button) ══
+         Paste your ad code (e.g. Google AdSense <ins> tag) inside this div. -->
+    <div class="ad-slot" id="ad-gameover">
+      <span class="ad-slot-label">AD</span>
+      <!-- your ad code here -->
+    </div>
+
     <button class="btn-primary" onclick="startGame()">Play Again</button>
     <div class="menu-row"><button class="btn-secondary" onclick="showMenu()">Menu</button></div>
   </div>
@@ -296,10 +403,59 @@
 <div class="overlay" id="ov-scores" style="display:none">
   <div class="panel">
     <div class="logo" style="font-size:clamp(26px,8vw,42px)">🏆 SCORES</div><br>
-    <div class="hs-list" id="hs-main"></div><br>
+    <div class="hs-list" id="hs-main"></div>
+
+    <!-- ══ AD SLOT 3 — Scores screen (above Back button) ══
+         Paste your ad code (e.g. Google AdSense <ins> tag) inside this div. -->
+    <div class="ad-slot" id="ad-scores">
+      <span class="ad-slot-label">AD</span>
+      <!-- your ad code here -->
+    </div>
+
     <div class="menu-row">
       <button class="btn-primary" onclick="hideScores()">Back</button>
     </div>
+  </div>
+</div>
+
+<!-- Skin Marketplace -->
+<div class="overlay" id="ov-skins" style="display:none">
+  <div class="panel" style="max-width:440px">
+    <div class="logo" style="font-size:clamp(22px,7vw,36px)">🎨 SKINS</div>
+    <div style="color:#445;font-size:clamp(9px,2.2vw,11px);letter-spacing:2px;margin-bottom:4px">TAP A LOCKED SKIN TO UNLOCK WITH ADS</div>
+    <div class="skin-grid" id="skin-grid"></div>
+    <div class="menu-row">
+      <button class="btn-primary" onclick="closeSkins()">Back</button>
+    </div>
+  </div>
+</div>
+
+<!-- Ad-Watch Overlay -->
+<div class="overlay" id="ov-adwatch" style="display:none">
+  <div class="adwatch-wrap">
+
+    <!-- ═══════════════════════════════════════════════════
+         PASTE YOUR AD NETWORK CODE INSIDE THIS DIV
+         e.g. <script> tag, <ins> tag, iframe, etc.
+         ═══════════════════════════════════════════════════ -->
+    <div class="adwatch-ad-area" id="adwatch-ad-area">
+      <span class="adwatch-ad-placeholder">YOUR AD HERE</span>
+      <!-- ↓↓↓ paste your ad tag below this line ↓↓↓ -->
+
+      <!-- ↑↑↑ paste your ad tag above this line ↑↑↑ -->
+    </div>
+
+    <!-- Bottom control bar -->
+    <div class="adwatch-bar-row">
+      <div class="adwatch-prog" id="adwatch-prog">Ad 1 of 2</div>
+      <div class="adwatch-timer-wrap">
+        <span class="adwatch-timer-lbl">closes in</span>
+        <span class="adwatch-timer" id="adwatch-timer">12</span>
+        <span class="adwatch-timer-lbl">s</span>
+      </div>
+      <div id="adwatch-close" onclick="closeAd()">✕</div>
+    </div>
+
   </div>
 </div>
 
@@ -316,6 +472,27 @@
   </div>
 </div>
 
+<!-- Footer -->
+<div style="
+  position:fixed; bottom:0; left:0; right:0;
+  text-align:center;
+  padding:8px 16px;
+  background:rgba(5,7,16,0.75);
+  backdrop-filter:blur(8px);
+  border-top:1px solid rgba(255,255,255,0.07);
+  font-family:Inter,system-ui,sans-serif;
+  font-size:12px;
+  color:#556;
+  pointer-events:auto;
+  z-index:999;
+">
+  Made by <span style="color:#00ff88; font-weight:700;">Kareem Azzam</span>
+  &nbsp;·&nbsp;
+  <a href="mailto:kareemazzam629@gmail.com" style="color:#00ccff; text-decoration:none;">kareemazzam629@gmail.com</a>
+  &nbsp;·&nbsp;
+  <a href="https://instagram.com/YOUR_USERNAME" style="color:#00ccff; text-decoration:none;">Instagram</a>
+</div>
+
 <!-- Firebase 8 SDK -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
@@ -326,51 +503,20 @@
 <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/controls/OrbitControls.js"></script>
 
 <!-- ═══════════════════════════════════════════════════════════════
-     ██████  CONFIGURATION — PUT YOUR CREDENTIALS HERE  ██████
-     This block is isolated so a typo here NEVER breaks the game.
-     ═══════════════════════════════════════════════════════════════
-
-     FIREBASE CONFIG (handles both Auth and Database)
-     → Go to: https://console.firebase.google.com
-     → Open your project → Project Settings → Your apps → SDK setup
-     → Copy the firebaseConfig values and paste them below.
-
-     REQUIRED FIREBASE SETUP:
-     1. Enable "Google" sign-in: Authentication → Sign-in method → Google → Enable
-     2. Enable Realtime Database: Build → Realtime Database → Create database
-     3. Set these Database Rules:
-        {
-          "rules": {
-            "leaderboard": {
-              ".read": true,
-              "$uid": {
-                ".write": "auth !== null && auth.uid === $uid",
-                ".validate": "newData.hasChildren(['name','score','date'])"
-              }
-            }
-          }
-        }
-     4. Add your site to Authorized domains:
-        Authentication → Settings → Authorized domains → Add domain
-        (Add your GitHub Pages URL, e.g. yourusername.github.io)
-
-     FOR GITHUB PAGES:
-     → Push this file to a GitHub repo and enable GitHub Pages in Settings → Pages
-     → No other server is needed — this file is fully self-contained.
+     FIREBASE CONFIG — put your own credentials here
      ═══════════════════════════════════════════════════════════════ -->
 <script>
   var FIREBASE_CONFIG = {
-    apiKey:            "AIzaSyDIBvBxF2vJeWJumelPeCow68NSRuHel6o",
-    authDomain:        "lucky-snake-b4802.firebaseapp.com",
-    projectId:         "lucky-snake-b4802",
-    storageBucket:     "lucky-snake-b4802.firebasestorage.app",
-    messagingSenderId: "970217649281",
-    appId:             "1:970217649281:web:7c8f3e0dfcbf48aee9c980",
-    measurementId:     "G-V7VXDE6767",
-    databaseURL:       "https://lucky-snake-b4802-default-rtdb.firebaseio.com"
+    apiKey:            "YOUR_FIREBASE_API_KEY",
+    authDomain:        "YOUR_PROJECT.firebaseapp.com",
+    projectId:         "YOUR_PROJECT",
+    storageBucket:     "YOUR_PROJECT.firebasestorage.app",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId:             "YOUR_APP_ID",
+    databaseURL:       "https://YOUR_PROJECT-default-rtdb.firebaseio.com"
   };
 </script>
-<!-- ▲▲▲  END OF CONFIGURATION — do not edit below this line  ▲▲▲ -->
+<!-- ▲▲▲  END OF CONFIGURATION  ▲▲▲ -->
 
 <script>
 /* ── Safe fallback if config block had an error ── */
@@ -416,7 +562,7 @@ function clearUser() {
 /* ── Google Sign-In via Firebase Auth ── */
 function googleSignIn() {
   if (!db) {
-    alert('Firebase is not configured yet.\n\nOpen the HTML file and fill in your FIREBASE_CONFIG values in the CONFIGURATION section at the top of the script.');
+    alert('Firebase is not configured yet.\n\nOpen the HTML file and fill in your FIREBASE_CONFIG values in the CONFIGURATION section.');
     return;
   }
   var provider = new firebase.auth.GoogleAuthProvider();
@@ -469,10 +615,12 @@ function syncUI() {
 
 function applySettings() {
   applyTheme(cfg.theme);
+  applySkin(activeSkinId);
   if (cfg.music) startMusic(); else stopMusic();
   refreshDpad();
-  // update speed mid-game
-  if (gameState === 'playing') gameSpeed = Math.max(SPEED_MAP[cfg.speed] * 0.4, SPEED_MAP[cfg.speed]);
+  /* FIX: was Math.max which always returned full speed — use Math.min so speed
+     can increase (lower ms interval = faster) as the game progresses */
+  if (gameState === 'playing') gameSpeed = Math.min(SPEED_MAP[cfg.speed] * 0.4, SPEED_MAP[cfg.speed]);
 }
 
 /* settings panel navigation */
@@ -494,14 +642,19 @@ function closeSettings() {
    LEADERBOARD  (Firebase = global  |  localStorage = local fallback)
 ═══════════════════════════════════════════════════ */
 
-/* Save a score for the current user.
-   - Firebase: one entry per user, keeps their personal best.
-   - localStorage: always saved as local fallback. */
-function saveScore(score) {
-  // Always save locally
-  var local = getLocalScores();
+/* Returns the previous personal best BEFORE this game's score is saved.
+   Call this before saveScore() to capture the old best for comparison. */
+function getPreviousBest() {
   var uid   = currentUser ? currentUser.uid : 'guest';
-  var name  = currentUser ? currentUser.name : 'Guest';
+  var local = getLocalScores();
+  var entry = local.find(function(e){ return e.uid === uid; });
+  return entry ? entry.score : 0;
+}
+
+function saveScore(score) {
+  var local    = getLocalScores();
+  var uid      = currentUser ? currentUser.uid : 'guest';
+  var name     = currentUser ? currentUser.name : 'Guest';
   var existing = local.findIndex(function(e){ return e.uid === uid; });
   if (existing === -1 || local[existing].score < score) {
     var entry = { uid: uid, name: name, picture: currentUser ? (currentUser.picture||'') : '', score: score, date: new Date().toLocaleDateString() };
@@ -510,7 +663,6 @@ function saveScore(score) {
     localStorage.setItem('s3d-scores', JSON.stringify(local.slice(0, 20)));
   }
 
-  // Save to Firebase if signed in and configured
   if (db && currentUser) {
     var ref = db.ref('leaderboard/' + currentUser.uid);
     ref.once('value', function(snap) {
@@ -532,8 +684,6 @@ function getLocalScores() {
   try { return JSON.parse(localStorage.getItem('s3d-scores') || '[]'); } catch(e){ return []; }
 }
 
-/* Render leaderboard into element #id.
-   Shows a loading indicator while fetching from Firebase. */
 function renderScores(id, onDone) {
   var el = document.getElementById(id);
   if (!el) return;
@@ -564,7 +714,7 @@ function renderScores(id, onDone) {
       snap.forEach(function(child) { list.push(Object.assign({ uid: child.key }, child.val())); });
       list.sort(function(a,b){ return b.score - a.score; });
       draw(list);
-    }, function() { draw(getLocalScores()); }); // on error fall back to local
+    }, function() { draw(getLocalScores()); });
   } else {
     draw(getLocalScores());
   }
@@ -691,7 +841,6 @@ function nextNote() {
   } catch(e){ melodyTimer = null; }
 }
 
-/* Update music volume live */
 function updateMusicVol() {
   if (musicGain && audioCtx) {
     try { musicGain.gain.setValueAtTime(cfg.musicVol * 0.11, audioCtx.currentTime); } catch(e){}
@@ -707,7 +856,7 @@ var THEMES = {
   neon:  { bg:0x020208, floor:0x030810, grid:0x080f22, head:0xff00ee, headE:0xff00ee, body:0xcc00bb, bodyE:0x880088, food:0x00ffee, foodE:0x00ccaa, wall:0x180030, wallE:0x9900cc, fog:0x020208, ambI:0.3, sunI:1.0 },
 };
 
-var mats = {}; // populated after scene created
+var mats = {};
 
 function applyTheme(name) {
   var t = THEMES[name] || THEMES.dark;
@@ -723,6 +872,202 @@ function applyTheme(name) {
   if (mats.wall)   { mats.wall.color.setHex(t.wall);  mats.wall.emissive.setHex(t.wallE); }
   if (ambLight)    { ambLight.intensity = t.ambI; }
   if (sunLight)    { sunLight.intensity = t.sunI; }
+}
+
+/* ═══════════════════════════════════════════════════
+   SKIN MARKETPLACE
+═══════════════════════════════════════════════════ */
+var SKINS = [
+  { id:'classic',  name:'Classic',   free:true,  ads:0, head:0x00ff88, headE:0x00ff88, headI:0.55, body:0x00cc66, bodyE:0x009944, bodyI:0.22, rough:0.25, metal:0.45, c1:'#00ff88', c2:'#00cc66' },
+  { id:'neonblue', name:'Neon Blue', free:false, ads:2, head:0x00ccff, headE:0x00ccff, headI:0.70, body:0x0088cc, bodyE:0x0055aa, bodyI:0.30, rough:0.15, metal:0.60, c1:'#00ccff', c2:'#0088cc' },
+  { id:'fire',     name:'Fire',      free:false, ads:2, head:0xff6600, headE:0xff3300, headI:0.80, body:0xcc4400, bodyE:0xaa2200, bodyI:0.40, rough:0.20, metal:0.30, c1:'#ff6600', c2:'#cc2200' },
+  { id:'galaxy',   name:'Galaxy',    free:false, ads:2, head:0xaa44ff, headE:0x8800ff, headI:0.70, body:0x7722cc, bodyE:0x5500aa, bodyI:0.30, rough:0.10, metal:0.70, c1:'#aa44ff', c2:'#5500aa' },
+  { id:'gold',     name:'Gold',      free:false, ads:3, head:0xffcc00, headE:0xffaa00, headI:0.60, body:0xddaa00, bodyE:0xbb8800, bodyI:0.30, rough:0.10, metal:0.90, c1:'#ffcc00', c2:'#bb8800' },
+  { id:'ice',      name:'Ice',       free:false, ads:2, head:0xaaddff, headE:0x88ccff, headI:0.50, body:0x88bbdd, bodyE:0x6699bb, bodyI:0.20, rough:0.05, metal:0.50, c1:'#aaddff', c2:'#88bbdd' },
+  { id:'toxic',    name:'Toxic',     free:false, ads:2, head:0xaaff00, headE:0x88ee00, headI:0.80, body:0x77cc00, bodyE:0x55aa00, bodyI:0.35, rough:0.30, metal:0.40, c1:'#aaff00', c2:'#77cc00' },
+  { id:'rose',     name:'Rose',      free:false, ads:2, head:0xff44aa, headE:0xff0088, headI:0.70, body:0xcc2277, bodyE:0xaa0055, bodyI:0.30, rough:0.20, metal:0.50, c1:'#ff44aa', c2:'#cc2277' },
+  { id:'ocean',    name:'Ocean',     free:false, ads:2, head:0x00aacc, headE:0x0088aa, headI:0.60, body:0x007799, bodyE:0x005577, bodyI:0.25, rough:0.15, metal:0.55, c1:'#00aacc', c2:'#007799' },
+  { id:'lava',     name:'Lava',      free:false, ads:3, head:0xff2200, headE:0xff0000, headI:0.90, body:0xcc1100, bodyE:0xaa0000, bodyI:0.50, rough:0.40, metal:0.20, c1:'#ff2200', c2:'#aa0000' },
+  { id:'midnight', name:'Midnight',  free:false, ads:3, head:0x4466ff, headE:0x2244ff, headI:0.80, body:0x2233cc, bodyE:0x1122aa, bodyI:0.40, rough:0.10, metal:0.80, c1:'#4466ff', c2:'#2233cc' },
+  { id:'emerald',  name:'Emerald',   free:false, ads:3, head:0x00ff77, headE:0x00ee44, headI:0.65, body:0x00cc55, bodyE:0x009933, bodyI:0.30, rough:0.05, metal:0.85, c1:'#00ff77', c2:'#00cc55' },
+  { id:'sunset',   name:'Sunset',    free:false, ads:2, head:0xff8800, headE:0xff6600, headI:0.70, body:0xdd5500, bodyE:0xbb3300, bodyI:0.35, rough:0.25, metal:0.35, c1:'#ff8800', c2:'#dd5500' },
+  { id:'cyber',    name:'Cyber',     free:false, ads:3, head:0xff00ff, headE:0xee00ee, headI:0.85, body:0xcc00cc, bodyE:0xaa00aa, bodyI:0.45, rough:0.10, metal:0.75, c1:'#ff00ff', c2:'#cc00cc' },
+  { id:'arctic',   name:'Arctic',    free:false, ads:2, head:0xeeffff, headE:0xccffff, headI:0.40, body:0xaaddee, bodyE:0x88bbcc, bodyI:0.20, rough:0.03, metal:0.60, c1:'#eeffff', c2:'#aaddee' },
+];
+
+var unlockedSkins = (function() {
+  try { return JSON.parse(localStorage.getItem('ls-unlocked') || '["classic"]'); } catch(e){ return ['classic']; }
+})();
+var activeSkinId = localStorage.getItem('ls-skin') || 'classic';
+
+function saveSkinsData() {
+  localStorage.setItem('ls-unlocked', JSON.stringify(unlockedSkins));
+  localStorage.setItem('ls-skin', activeSkinId);
+}
+
+function getSkin(id) {
+  return SKINS.find(function(s){ return s.id === id; }) || SKINS[0];
+}
+
+function applySkin(skinId) {
+  activeSkinId = skinId;
+  saveSkinsData();
+  var s = getSkin(skinId);
+  if (!mats.head) return;
+  mats.head.color.setHex(s.head);
+  mats.head.emissive.setHex(s.headE);
+  mats.head.emissiveIntensity = s.headI;
+  mats.head.roughness  = s.rough;
+  mats.head.metalness  = s.metal;
+  mats.body.color.setHex(s.body);
+  mats.body.emissive.setHex(s.bodyE);
+  mats.body.emissiveIntensity = s.bodyI;
+  mats.body.roughness  = s.rough;
+  mats.body.metalness  = s.metal;
+}
+
+/* Build a mini snake preview (3 stacked segments) using div elements */
+function buildSkinPreview(s) {
+  var segs = [
+    { top:4,  left:12, w:26, h:22, opacity:1.0   },
+    { top:18, left:8,  w:22, h:18, opacity:0.80  },
+    { top:30, left:5,  w:18, h:14, opacity:0.60  },
+  ];
+  return segs.map(function(seg, i) {
+    var col = i === 0 ? s.c1 : s.c2;
+    return '<div class="skin-preview-seg" style="' +
+      'top:' + seg.top + 'px;left:' + seg.left + 'px;' +
+      'width:' + seg.w + 'px;height:' + seg.h + 'px;' +
+      'background:' + col + ';opacity:' + seg.opacity + ';' +
+      'box-shadow:0 0 6px ' + col + '88;' +
+    '"></div>';
+  }).join('');
+}
+
+function renderSkinGrid() {
+  var grid = document.getElementById('skin-grid');
+  if (!grid) return;
+  grid.innerHTML = SKINS.map(function(s) {
+    var owned  = s.free || unlockedSkins.indexOf(s.id) !== -1;
+    var active = s.id === activeSkinId;
+    var statusHtml = active
+      ? '<span class="skin-status sk-st-active">✓ ON</span>'
+      : owned
+        ? '<span class="skin-status sk-st-owned">OWNED</span>'
+        : '<span class="skin-status sk-st-ads">👁 ' + s.ads + ' ads</span>';
+    return '<div class="skin-card' +
+        (active ? ' sk-active' : '') +
+        (owned  ? '' : ' sk-locked') +
+      '" onclick="skinCardClick(\'' + s.id + '\')">' +
+      '<div class="skin-preview">' +
+        buildSkinPreview(s) +
+        (owned ? '' : '<div class="skin-lock-ic">🔒</div>') +
+      '</div>' +
+      '<div class="skin-name">' + s.name + '</div>' +
+      statusHtml +
+    '</div>';
+  }).join('');
+}
+
+function skinCardClick(id) {
+  var s     = getSkin(id);
+  var owned = s.free || unlockedSkins.indexOf(id) !== -1;
+  if (owned) {
+    applySkin(id);
+    renderSkinGrid();
+  } else {
+    startUnlock(id);
+  }
+}
+
+function openSkins() {
+  hide('ov-menu');
+  renderSkinGrid();
+  show('ov-skins');
+}
+
+function closeSkins() {
+  hide('ov-skins');
+  show('ov-menu');
+}
+
+/* ── Simulated ad watching ── */
+var _unlockTarget = null;
+var _adsWatched   = 0;
+var _adTimer      = null;
+
+function startUnlock(skinId) {
+  _unlockTarget = skinId;
+  _adsWatched   = 0;
+  watchNextAd();
+}
+
+var _adOnDone = null; // callback set by runAdCountdown
+
+function watchNextAd() {
+  var s      = getSkin(_unlockTarget);
+  var needed = s.ads;
+  _adsWatched++;
+  document.getElementById('adwatch-prog').textContent = 'Ad ' + _adsWatched + ' of ' + needed;
+
+  /* Hide X button at start of each ad */
+  var closeBtn = document.getElementById('adwatch-close');
+  if (closeBtn) closeBtn.style.display = 'none';
+
+  show('ov-adwatch');
+
+  /* ═══════════════════════════════════════════════════
+     YOUR REAL AD CODE:
+     Call your ad network SDK here (e.g. show a rewarded ad),
+     then call  closeAd()  when the ad finishes or is dismissed.
+     The 12-second timer below is the fallback — it fires
+     closeAd() automatically if the SDK doesn't.
+     ═══════════════════════════════════════════════════ */
+  runAdCountdown(12, needed, function() {
+    closeAd();
+  });
+}
+
+/* Called when the ad ends (by timer or X button) */
+function closeAd() {
+  if (_adTimer) { clearInterval(_adTimer); _adTimer = null; }
+  hide('ov-adwatch');
+  var s      = getSkin(_unlockTarget);
+  var needed = s.ads;
+  onAdComplete(needed);
+}
+
+function onAdComplete(needed) {
+  if (_adsWatched >= needed) {
+    if (unlockedSkins.indexOf(_unlockTarget) === -1) unlockedSkins.push(_unlockTarget);
+    saveSkinsData();
+    applySkin(_unlockTarget);
+    renderSkinGrid();
+  } else {
+    setTimeout(watchNextAd, 400);
+  }
+}
+
+/* Counts down sec seconds; reveals X button after 5 s */
+function runAdCountdown(sec, needed, onDone) {
+  _adOnDone = onDone;
+  var remaining = sec;
+  document.getElementById('adwatch-timer').textContent = remaining;
+  if (_adTimer) clearInterval(_adTimer);
+  _adTimer = setInterval(function() {
+    remaining--;
+    document.getElementById('adwatch-timer').textContent = remaining;
+    /* Show X button after 5 seconds have passed */
+    if (remaining <= sec - 5) {
+      var closeBtn = document.getElementById('adwatch-close');
+      if (closeBtn) closeBtn.style.display = 'flex';
+    }
+    if (remaining <= 0) {
+      clearInterval(_adTimer);
+      _adTimer = null;
+      onDone();
+    }
+  }, 1000);
 }
 
 /* ═══════════════════════════════════════════════════
@@ -752,7 +1097,6 @@ function buildScene() {
   orbit.enableDamping = true;
   orbit.dampingFactor = 0.08;
 
-  // Lights
   ambLight = new THREE.AmbientLight(0xffffff, 0.45);
   scene.add(ambLight);
 
@@ -767,7 +1111,6 @@ function buildScene() {
   var pl1 = new THREE.PointLight(0x00ccff, 0.5); pl1.position.set(-10, 14, -10); scene.add(pl1);
   var pl2 = new THREE.PointLight(0x00ff88, 0.3); pl2.position.set(10, 14, 10);   scene.add(pl2);
 
-  // Floor
   mats.floor = new THREE.MeshStandardMaterial({ color: 0x0b101a, roughness: 0.9, metalness: 0.1 });
   var floor = new THREE.Mesh(new THREE.PlaneGeometry(GRID, GRID), mats.floor);
   floor.rotation.x = -Math.PI / 2;
@@ -775,7 +1118,6 @@ function buildScene() {
   floor.receiveShadow = true;
   scene.add(floor);
 
-  // Grid lines
   mats.grid = new THREE.LineBasicMaterial({ color: 0x182436, transparent: true, opacity: 0.6 });
   var lpts = [];
   for (var i = -HALF; i <= HALF; i++) {
@@ -785,7 +1127,6 @@ function buildScene() {
   var lineGeo = new THREE.BufferGeometry().setFromPoints(lpts);
   scene.add(new THREE.LineSegments(lineGeo, mats.grid));
 
-  // Walls
   mats.wall = new THREE.MeshStandardMaterial({ color: 0x1a2744, emissive: 0x0044aa, emissiveIntensity: 0.35, roughness: 0.5, metalness: 0.6 });
   var wh = 0.55, wt = 0.12;
   [
@@ -800,7 +1141,6 @@ function buildScene() {
     scene.add(m);
   });
 
-  // Snake pool
   mats.head = new THREE.MeshStandardMaterial({ color: 0x00ff88, emissive: 0x00ff88, emissiveIntensity: 0.55, roughness: 0.25, metalness: 0.45 });
   mats.body = new THREE.MeshStandardMaterial({ color: 0x00cc66, emissive: 0x009944, emissiveIntensity: 0.22, roughness: 0.28, metalness: 0.42 });
   var segGeo = new THREE.BoxGeometry(1, 0.78, 1);
@@ -813,7 +1153,6 @@ function buildScene() {
     smoothPos.push(new THREE.Vector3());
   }
 
-  // Food
   mats.food = new THREE.MeshStandardMaterial({ color: 0xff3355, emissive: 0xff1133, emissiveIntensity: 0.9, roughness: 0.15, metalness: 0.65 });
   foodMesh = new THREE.Mesh(new THREE.OctahedronGeometry(0.38, 0), mats.food);
   foodMesh.castShadow = true;
@@ -823,8 +1162,8 @@ function buildScene() {
   glowMesh = new THREE.Mesh(new THREE.SphereGeometry(0.52, 10, 10), mats.glow);
   scene.add(glowMesh);
 
-  // Apply theme & resize
   applyTheme(cfg.theme);
+  applySkin(activeSkinId);
   onResize();
   window.addEventListener('resize', onResize);
 }
@@ -837,7 +1176,6 @@ function onResize() {
   var fovH = 2 * Math.atan(Math.tan(fovV / 2) * camera.aspect);
   var minFov = Math.min(fovV, fovH);
   var dist = ((HALF + 1.5) / Math.tan(minFov / 2)) * 1.18;
-  // On portrait mobile zoom in slightly so the board is visible without being overwhelming.
   if (w < h) {
     var portraitZoom = Math.max(0.87, (w / h) * 1.5);
     dist *= portraitZoom;
@@ -894,7 +1232,7 @@ function tick(now) {
   snake.unshift(head);
 
   if (head.x === food.x && head.z === food.z) {
-     score += cfg.speed === 'fast' ? 17 : 10 ;
+    score += cfg.speed === 'fast' ? 17 : 10;
     food = randFood();
     gameSpeed = Math.max(SPEED_MAP[cfg.speed] * 0.38, gameSpeed - 2);
     updScore();
@@ -908,28 +1246,27 @@ function doGameOver() {
   gameState = 'gameover';
   orbit.enabled = true;
   playDie();
+
+  /* FIX: capture the previous personal best BEFORE saving the new score,
+     so we can accurately detect whether this run set a new record */
+  var prevBest = getPreviousBest();
   saveScore(score);
 
-  // Check if this is a new personal best
-  var local = getLocalScores();
-  var myEntry = local.find(function(e){ return e.uid === (currentUser ? currentUser.uid : 'guest'); });
-  var isNew   = score > 0 && myEntry && myEntry.score === score && local.filter(function(e){ return e.uid === (currentUser ? currentUser.uid : 'guest'); }).length === 1 || (myEntry && myEntry.score === score && score > 0);
-
-  document.getElementById('go-score').textContent  = score;
-  document.getElementById('new-best').style.display = (score > 0 && myEntry && myEntry.score <= score) ? 'block' : 'none';
+  document.getElementById('go-score').textContent = score;
+  /* FIX: compare against the pre-save best, not the post-save entry */
+  document.getElementById('new-best').style.display = (score > 0 && score > prevBest) ? 'block' : 'none';
 
   hide('hud'); hide('btn-pause'); hide('btn-settings-hud');
   document.getElementById('dpad').classList.remove('show');
 
-  // Load leaderboard async then show overlay
   renderScores('hs-go', function() { show('ov-gameover'); });
-  show('ov-gameover'); // show immediately too, scores will update in place
 }
 
 function updScore() {
+  var uid = currentUser ? currentUser.uid : 'guest';
   var local = getLocalScores();
   var myBest = 0;
-  local.forEach(function(e){ if (!currentUser || e.uid === currentUser.uid) myBest = Math.max(myBest, e.score); });
+  local.forEach(function(e){ if (e.uid === uid) myBest = Math.max(myBest, e.score); });
   document.getElementById('score-val').textContent = score;
   document.getElementById('best-val').textContent  = Math.max(myBest, score);
 }
@@ -941,12 +1278,14 @@ function show(id) { var el = document.getElementById(id); if (el) el.style.displ
 function hide(id) { var el = document.getElementById(id); if (el) el.style.display = 'none'; }
 
 function startGame() {
-  getAudioCtx(); // unlock audio on user gesture
+  getAudioCtx();
   initGame();
   gameState = 'playing';
   orbit.enabled = false;
   hide('ov-menu'); hide('ov-gameover'); hide('ov-paused');
   show('hud'); show('btn-pause'); show('btn-settings-hud');
+  /* FIX: reset pause button icon to the pause symbol whenever a game starts */
+  document.getElementById('btn-pause').textContent = '❚❚';
   refreshDpad();
   updScore();
   if (cfg.music) startMusic();
@@ -966,21 +1305,27 @@ function togglePause() {
   if (gameState === 'playing') {
     gameState = 'paused';
     orbit.enabled = true;
+    /* FIX: update pause button icon to show ▶ (resume) when paused */
+    document.getElementById('btn-pause').textContent = '▶';
     document.getElementById('dpad').classList.remove('show');
+    stopMusic();
     show('ov-paused');
   } else if (gameState === 'paused') {
     gameState = 'playing';
     orbit.enabled = false;
     lastTick = performance.now();
+    /* FIX: restore pause icon when game resumes */
+    document.getElementById('btn-pause').textContent = '❚❚';
     hide('ov-paused');
     refreshDpad();
+    if (cfg.music) startMusic();
   }
 }
 
 function refreshDpad() {
-  var isTouch = window.matchMedia('(pointer: coarse)').matches;
-  var show = isTouch && gameState === 'playing' && cfg.controls !== 'swipe';
-  document.getElementById('dpad').classList.toggle('show', show);
+  var isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
+  var shouldShow = isTouchDevice && gameState === 'playing' && cfg.controls !== 'swipe';
+  document.getElementById('dpad').classList.toggle('show', shouldShow);
 }
 
 /* ═══════════════════════════════════════════════════
@@ -1055,6 +1400,7 @@ function animate(now) {
   orbit.update();
   renderer.render(scene, camera);
 }
+
 document.addEventListener('visibilitychange', function() {
   if (document.hidden) {
     if (gameState === 'playing') {
@@ -1083,6 +1429,7 @@ window.addEventListener('pageshow', function() {
     audioCtx.resume().catch(function(){});
   }
 });
+
 /* ═══════════════════════════════════════════════════
    BOOT
 ═══════════════════════════════════════════════════ */
@@ -1090,25 +1437,5 @@ buildScene();
 syncUI();
 requestAnimationFrame(animate);
 </script>
-  <div style="
-  position:fixed; bottom:0; left:0; right:0;
-  text-align:center;
-  padding:8px 16px;
-  background:rgba(5,7,16,0.75);
-  backdrop-filter:blur(8px);
-  border-top:1px solid rgba(255,255,255,0.07);
-  font-family:Inter,system-ui,sans-serif;
-  font-size:12px;
-  color:#556;
-  pointer-events:auto;
-  z-index:999;
-">
-  Made by <span style="color:#00ff88; font-weight:700;">Kareem Azzam</span>
-  &nbsp;·&nbsp;
-  <a href="mailto:kareemazzam629@gmail.com" style="color:#00ccff; text-decoration:none;">kareemazzam629@gmail.com</a>
-  &nbsp;·&nbsp;
-  <a href="https://instagram.com/YOUR_USERNAME" style="color:#00ccff; text-decoration:none;">Instagram</a>
-</div>
-  <script src="https://pl29195262.profitablecpmratenetwork.com/c6/b5/da/c6b5da5616f486da3e62cdd417d32b81.js"></script>
 </body>
 </html>
