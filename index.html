@@ -1059,6 +1059,8 @@ function buildScene() {
     lpts.push(new THREE.Vector3(i, 0.002, -HALF), new THREE.Vector3(i, 0.002, HALF));
     lpts.push(new THREE.Vector3(-HALF, 0.002, i), new THREE.Vector3(HALF, 0.002, i));
   }
+  var SEGMENT_RADIUS = 0.48;
+var segGeo = new THREE.SphereGeometry(SEGMENT_RADIUS, 24, 18);
 for (var j = 0; j < MAX_SEG; j++) {
   var hue = (j * 0.05) % 1; // Vary the hue for a rainbow-like effect
   var color = new THREE.Color();
