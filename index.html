@@ -152,24 +152,6 @@
       cursor:pointer; font-family:inherit; padding:0; touch-action:manipulation;
     }
     #btn-signout:hover { color:#99a; }
-
-    /* ── Ad Slots ── */
-    .ad-slot {
-      width:100%; max-width:320px;
-      min-height:60px;
-      display:flex; align-items:center; justify-content:center;
-      background:rgba(255,255,255,0.04);
-      border:1.5px dashed rgba(255,255,255,0.13);
-      border-radius:10px;
-      margin:clamp(10px,3vw,16px) 0;
-      overflow:hidden;
-      position:relative;
-    }
-    .ad-slot-label {
-      color:#334; font-size:10px; font-weight:700; letter-spacing:2px;
-      position:absolute; top:4px; left:8px; pointer-events:none;
-    }
-
     /* ── Skin Marketplace ── */
     .skin-grid {
       display:grid; grid-template-columns:repeat(3,1fr); gap:10px;
@@ -205,46 +187,6 @@
       position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
       font-size:20px; background:rgba(0,0,0,0.45);
     }
-
-    /* ── Ad-Watch Overlay ── */
-    #ov-adwatch { z-index:9999; background:rgba(0,0,0,0.92); }
-    .adwatch-wrap {
-      position:relative; width:min(94vw,420px);
-      background:#000; border-radius:14px; overflow:hidden;
-      display:flex; flex-direction:column;
-      box-shadow:0 8px 40px rgba(0,0,0,0.8);
-    }
-    /* ── Paste your ad tag here ── */
-    .adwatch-ad-area {
-      width:100%; min-height:220px;
-      background:#0a0a0a;
-      display:flex; align-items:center; justify-content:center;
-      position:relative;
-    }
-    .adwatch-ad-placeholder {
-      color:#222; font-size:11px; letter-spacing:2px; font-weight:700;
-      pointer-events:none; user-select:none;
-    }
-    /* Bottom bar */
-    .adwatch-bar-row {
-      display:flex; align-items:center; justify-content:space-between;
-      padding:10px 14px; background:#111; gap:10px;
-    }
-    .adwatch-prog  { color:#778; font-size:clamp(10px,2.5vw,12px); font-weight:700; letter-spacing:1px; }
-    .adwatch-timer-wrap { display:flex; align-items:center; gap:6px; }
-    .adwatch-timer-lbl  { color:#445; font-size:10px; }
-    .adwatch-timer { color:#ffcc00; font-size:clamp(16px,4.5vw,22px); font-weight:900; min-width:24px; text-align:center; }
-    /* X close button */
-    #adwatch-close {
-      display:none;
-      width:32px; height:32px; border-radius:50%;
-      background:rgba(255,255,255,0.12); border:1.5px solid rgba(255,255,255,0.25);
-      color:#ccc; font-size:15px; font-weight:700;
-      align-items:center; justify-content:center;
-      cursor:pointer; touch-action:manipulation; flex-shrink:0;
-      transition:background 0.15s;
-    }
-    #adwatch-close:active { background:rgba(255,255,255,0.25); }
   </style>
 </head>
 <body>
@@ -277,14 +219,6 @@
       <button class="btn-secondary" onclick="showScores()">🏆 Scores</button>
       <button class="btn-secondary" onclick="openSkins()">🎨 Skins</button>
     </div>
-
-    <!-- ══ AD SLOT 1 — Main Menu (below Scores button) ══
-         Paste your ad code (e.g. Google AdSense <ins> tag) inside this div. -->
-    <div class="ad-slot" id="ad-menu">
-      <span class="ad-slot-label">AD</span>
-      <!-- your ad code here -->
-    </div>
-
     <!-- Google Sign-In -->
     <div class="divider">
       <span class="divider-line"></span>
