@@ -1059,22 +1059,16 @@ function buildScene() {
     lpts.push(new THREE.Vector3(i, 0.002, -HALF), new THREE.Vector3(i, 0.002, HALF));
     lpts.push(new THREE.Vector3(-HALF, 0.002, i), new THREE.Vector3(HALF, 0.002, i));
   }
-  var lineGeo = new THREE.BufferGeometry().setFromPoints(lpts);
-  scene.add(new THREE.LineSegments(lineGeo, mats.grid));
-
-  mats.wall = new THREE.MeshStandardMaterial({ color: 0x1a2744, emissive: 0x0044aa, emissiveIntensity: 0.35, roughness: 0.5, metalness: 0.6 });
-  var wh = 0.55, wt = 0.12;
-  [
-    [0, wh/2, -(HALF+wt/2), GRID+wt*2, wh, wt],
-    [0, wh/2,  (HALF+wt/2), GRID+wt*2, wh, wt],
-    [-(HALF+wt/2), wh/2, 0, wt, wh, GRID+wt*2],
-    [ (HALF+wt/2), wh/2, 0, wt, wh, GRID+wt*2],
-  ].forEach(function(d) {
-    var m = new THREE.Mesh(new THREE.BoxGeometry(d[3], d[4], d[5]), mats.wall);
-    m.position.set(d[0], d[1], d[2]);
-    m.receiveShadow = true;
-    scene.add(m);
-  });
+var SEGMENT_RADIUS = 0.48; // you can tweak this
+var segGeo = new THREE.SphereGeometry(SEGMENT_RADIUS, 24, 18);
+for (var j = 0; j < MAX_SEG; j++) {
+  var sm = new THREE.Mesh(segGeo, j === 0 ? mats.head : mats.body);
+  sm.visible = false;
+  sm.castShadow = true;
+  scene.add(sm);
+  segMeshes.push(sm);
+  smoothPos.push(new THREE.Vector3());
+}
 
   mats.head = new THREE.MeshStandardMaterial({ color: 0x00ff88, emissive: 0x00ff88, emissiveIntensity: 0.55, roughness: 0.25, metalness: 0.45 });
   mats.body = new THREE.MeshStandardMaterial({ color: 0x00cc66, emissive: 0x009944, emissiveIntensity: 0.22, roughness: 0.28, metalness: 0.42 });
