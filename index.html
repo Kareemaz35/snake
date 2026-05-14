@@ -1059,10 +1059,12 @@ function buildScene() {
     lpts.push(new THREE.Vector3(i, 0.002, -HALF), new THREE.Vector3(i, 0.002, HALF));
     lpts.push(new THREE.Vector3(-HALF, 0.002, i), new THREE.Vector3(HALF, 0.002, i));
   }
-var SEGMENT_RADIUS = 0.48; // you can tweak this
-var segGeo = new THREE.SphereGeometry(SEGMENT_RADIUS, 24, 18);
 for (var j = 0; j < MAX_SEG; j++) {
-  var sm = new THREE.Mesh(segGeo, j === 0 ? mats.head : mats.body);
+  var hue = (j * 0.05) % 1; // Vary the hue for a rainbow-like effect
+  var color = new THREE.Color();
+  color.setHSL(hue, 1, 0.5);
+  var mat = new THREE.MeshStandardMaterial({ color: color, emissive: color, emissiveIntensity: 0.7, roughness: 0.35, metalness: 0.4 });
+  var sm = new THREE.Mesh(segGeo, (j === 0) ? mats.head : mat);
   sm.visible = false;
   sm.castShadow = true;
   scene.add(sm);
